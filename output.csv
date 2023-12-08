@@ -1,0 +1,34 @@
+Holiday, Number of countries observing
+Christmas Day,4
+Independance Day,1
+Good Friday,4
+Saint Patricks Day,1
+May Day,2
+
+Number of Holidays celebrated in first half of Year,Number of Holidays celebrated in second half of Year
+(In order of US Australia Ireland France)
+6,6
+17,6
+6,4
+5,5
+
+Category,Average Number of Ingredients
+Beef,12.58695652173913
+Breakfast,7.5
+Chicken,13.057142857142857
+Dessert,9.307692307692308
+Goat,7.0
+Lamb,12.733333333333333
+Miscellaneous,9.454545454545455
+Pasta,10.777777777777779
+Pork,11.0
+Seafood,11.655172413793103
+Side,7.882352941176471
+Starter,11.25
+Vegan,11.666666666666666
+Vegetarian,10.3
+
+Meal Type,Number of Meals
+Vegetarian,40
+Vegan,3
+Other,259
