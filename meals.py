@@ -72,6 +72,7 @@ def add_meal(filename, cur, conn):
 
     conn.commit()
 
+# No need to insert the data by 25 because there are only 14 rows
 def add_category(filename, cur, conn):
     f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), filename)))
     file_data = f.read()

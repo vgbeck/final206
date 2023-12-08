@@ -18,7 +18,6 @@ def create_country_table(cur, conn):
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
-
     conn.commit()
 
 def add_country(filename, cur, conn):
@@ -26,7 +25,8 @@ def add_country(filename, cur, conn):
     file_data = f.read()
     f.close()
     data = json.loads(file_data)
-    
+
+    #finds the max id from the table
     try:
         cur.execute(
             """
@@ -42,6 +42,7 @@ def add_country(filename, cur, conn):
 
     temp = start
 
+    #adds the next 25 items
     for item in data[start:start+25]:
         id = temp
         temp += 1
@@ -58,7 +59,7 @@ def create_holiday_table(cur, conn):
     conn.commit()
 
 def add_holiday(cur, conn, holiday_count):
-
+    #finds the max id from the table
     try:
         cur.execute(
             """
@@ -72,11 +73,17 @@ def add_holiday(cur, conn, holiday_count):
     except:
         start = 0
 
+    #this is the max id to be saved at
     holiday_count = start
 
+    #these are the four countries to be graphed
     four_countries = ["US", "IE", "AU", "FR"]
+    #loops through each country
     for item in four_countries:
+        #creates a json
         json_name = item + ".json"
+
+        #finds the country_id that matches across both tables
         cur.execute(
         f"""
             SELECT id
@@ -87,7 +94,10 @@ def add_holiday(cur, conn, holiday_count):
         )
         res = cur.fetchone()
         res2 = 0
+
+        #if the data from the country with the matching country_id has been loaded in (res is not none)
         if not(res == None):
+            #this returns if data from that country has been added to the holiday table
             cur.execute(
             f"""
                 SELECT id
@@ -97,31 +107,30 @@ def add_holiday(cur, conn, holiday_count):
             """, (res[0],)
             )
             res2 = cur.fetchone()
-
+        #if the country data is ready to be loaded and is not already in holidays
         if not(res == None) and (res2 == None):
+            #call to the country's API
             response_country = requests.get('https://date.nager.at/api/v3/PublicHolidays/2024/' + str(item), verify=False)
             data2 = json.loads(response_country.text)
+            #write to the country's json file
             with open(json_name, "w") as write_file:
                 json.dump(data2, write_file, indent=4)
         
             f = open(json_name)
             data = json.load(f)
+            #load the json data
+            #this does not need a 25 limit because there are never more than 25 holidays in each country json
             for holiday in data:
+                #loop through each holiday in the json and save identifiers
                 date = str(holiday["date"])
                 local_name = str(holiday["localName"])
                 name = str(holiday["name"])
 
+                #load holiday data into database
                 cur.execute("INSERT OR IGNORE INTO holiday (id, country_id, date, local_name, name) VALUES (?,?,?,?,?)", (holiday_count, res[0], date, local_name, name))
                 holiday_count += 1
-                
                 conn.commit()
     
-    
-
-
-
-
-
 
 def main():
     cur, conn = setUpDatabase('meals_by_id.db')
@@ -131,43 +140,9 @@ def main():
     with open("country.json", "w") as write_file:
         json.dump(data, write_file, indent=4)
     add_country("country.json", cur, conn)
-    
-
     holiday_count = 1
-    # country_id = cur.execute("SELECT country_id FROM country")
-    # fetching = cur.fetchall()
     create_holiday_table(cur, conn)
     add_holiday(cur, conn, holiday_count)
-
-
-    # for item in fetching:
-    #     json_name = item[0] + ".json"
-    #     cur.execute(
-    #     f"""
-    #         SELECT id
-    #         FROM country
-    #         WHERE country_id = (?)
-
-    #     """, (item[0],)
-    #     )
-    #     res = cur.fetchone()
-
-
-    #     response_country = requests.get('https://date.nager.at/api/v3/PublicHolidays/2024/' + str(item[0]), verify=False)
-    #     data2 = json.loads(response_country.text)
-    #     with open(json_name, "w") as write_file:
-    #         json.dump(data2, write_file, indent=4)
-        
-    #     f = open(json_name)
-    #     data = json.load(f)
-    #     for holiday in data:
-    #         date = str(holiday["date"])
-    #         local_name = str(holiday["localName"])
-    #         name = str(holiday["name"])
-
-    #         cur.execute("INSERT OR IGNORE INTO holiday (id, country_id, date, local_name, name) VALUES (?,?,?,?,?)", (holiday_count, res[0], date, local_name, name))
-    #         holiday_count += 1
-    #         conn.commit()
 
     
         
