@@ -133,7 +133,7 @@ def add_holiday(cur, conn, holiday_count):
     
 
 def main():
-    cur, conn = setUpDatabase('meals_by_id.db')
+    cur, conn = setUpDatabase('food_friends.db')
     create_country_table(cur, conn)
     response_API = requests.get('https://date.nager.at/api/v3/AvailableCountries', verify = False)
     data = json.loads(response_API.text)

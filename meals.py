@@ -133,7 +133,7 @@ merge_category_files(files_list)
 if not os.path.exists('meals_by_id.json'):
     create_meals_by_id()
 
-cur, conn = set_up('meals_by_id.db')
+cur, conn = set_up('food_friends.db')
 create_meals_table(cur, conn)
 create_categories_table(cur, conn)
 

@@ -272,7 +272,7 @@ def visualis_two_pie(cur, conn):
 
 
 def main():
-    cur, conn = setUpDatabase("meals_by_id.db")
+    cur, conn = setUpDatabase("food_friends.db")
     bar = visualize(cur, conn)
     pie = visualis_two_pie(cur, conn)
 

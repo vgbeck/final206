@@ -112,7 +112,7 @@ def write_num_meals_type_to_csv(meal_types, filename):
                 csvwriter.writerow([meal_type, count])
     
 
-cur, conn = set_up('meals_by_id.db')
+cur, conn = set_up('food_friends.db')
 
 avg_data = calculate_averages(cur)
 meal_counts = count_meal_types(cur)
